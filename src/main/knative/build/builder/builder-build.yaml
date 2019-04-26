@@ -1,0 +1,40 @@
+apiVersion: build.knative.dev/v1alpha1
+kind: Build
+metadata:
+  name: dmn-quarkus-knative-builder-build
+spec:
+  serviceAccountName: build-bot
+  source:
+    git:
+      revision: https://github.com/xiezhang7/submarine-quarkus-knative-builder
+      url: master
+  steps:
+    - args:
+        - "/usr/local/bin/buildah.sh"
+      env:
+        - name: WORK_DIR
+          value: /workspace
+        - name: DESTINATION_NAME
+          value: xiezhang7/dmn-quarkus-knative-builder:0.1
+        - name: MAVEN_MIRROR_URL
+          value: http://nexus-xz-nexus.app.middleware.ocp.cloud.lab.eng.bos.redhat.com/nexus/content/groups/public/
+      image: quay.io/rhdevelopers/quarkus-java-builder
+      name: build-and-push
+      # needed for buildah builds to be running as containers
+      securityContext:
+        capabilities:
+          add: ["SYS_ADMIN"]
+      volumeMounts:
+        - mountPath: /root/.m2
+          name: m2-cache
+        - mountPath: /var/lib/containers
+          name: container-storage
+      workingDir: /workspace
+  timeout: 60m
+  volumes:
+    - name: m2-cache
+      persistentVolumeClaim:
+        claimName: m2-cache
+    - name: container-storage
+      persistentVolumeClaim:
+        claimName: container-storage

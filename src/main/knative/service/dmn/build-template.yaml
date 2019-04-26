@@ -1,0 +1,42 @@
+apiVersion: build.knative.dev/v1alpha1
+kind: BuildTemplate
+metadata:
+  name: build-dmn-quarkus
+spec:
+  parameters:
+    - description: The name of the image to push.
+      name: IMAGE
+    - description: The context directory from where to run the build.
+      name: CONTEXT_DIR
+    - description: The url of the mirror with submarine artifacts
+      name: SUBMARINE_MAVEN_MIRROR
+  steps:
+    - args:
+        - "/usr/local/bin/buildah.sh"
+      env:
+        - name: WORK_DIR
+          value: ${CONTEXT_DIR}
+        - name: DESTINATION_NAME
+          value: ${IMAGE}
+        - name: MAVEN_MIRROR_URL
+          value: ${SUBMARINE_MAVEN_MIRROR}
+      image: quay.io/rhdevelopers/quarkus-java-builder
+      name: build-and-push
+      # needed for buildah builds to be running as containers
+      securityContext:
+        capabilities:
+          add: ["SYS_ADMIN"]
+      volumeMounts:
+        - mountPath: /root/.m2
+          name: m2-cache
+        - mountPath: /var/lib/containers
+          name: container-storage
+      workingDir: ${CONTEXT_DIR}
+  timeout: 60m
+  volumes:
+    - name: m2-cache
+      persistentVolumeClaim:
+        claimName: m2-cache
+    - name: container-storage
+      persistentVolumeClaim:
+        claimName: container-storage

@@ -1,0 +1,35 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: dmn-quarkus-knative-builder
+spec:
+  runLatest:
+    configuration:
+      revisionTemplate:
+        metadata:
+          labels:
+            app: dmn-quarkus-knative-builder
+        spec:
+          container:
+            image: xiezhang7/dmn-quarkus-knative-builder:0.1
+            env:
+              - name: MAVEN_MIRROR
+                valueFrom:
+                  configMapKeyRef:
+                    name: dmn-quarkus-knative-builder-env
+                    key: secretToken
+              - name: BUILD_TEMPLATE_NAME
+                valueFrom:
+                  configMapKeyRef:
+                    name: dmn-quarkus-knative-builder-env
+                    key: accessToken
+              - name: SERVICE_ACCOUNT_NAME
+                valueFrom:
+                  configMapKeyRef:
+                    name: dmn-quarkus-knative-builder-env
+                    key: secretToken
+              - name: REGISTRY_ACCOUNT
+                valueFrom:
+                  configMapKeyRef:
+                    name: dmn-quarkus-knative-builder-env
+                    key: accessToken

@@ -1,0 +1,33 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: ${service}
+spec:
+  runLatest:
+    configuration:
+      build:
+        apiVersion: build.knative.dev/v1alpha1
+        kind: Build
+        spec:
+          serviceAccountName: ${serviceAccount}
+          source:
+            git:
+              revision: ${branch}
+              url: ${repo}
+          template:
+            arguments:
+              - name: IMAGE
+                value: ${registryAccount}/${service}:${tag}
+              - name: CONTEXT_DIR
+                value: /workspace/${workDir}
+              - name: SUBMARINE_MAVEN_MIRROR
+                value: ${mavenMirror}
+            name: ${buildTemplate}
+          timeout: 20m
+      revisionTemplate:
+        metadata:
+          labels:
+            app: ${service}
+        spec:
+          container:
+            image: ${registryAccount}/${service}:${tag}
