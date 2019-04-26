@@ -17,19 +17,19 @@ spec:
                 valueFrom:
                   configMapKeyRef:
                     name: dmn-quarkus-knative-builder-env
-                    key: secretToken
+                    key: maven_mirror
               - name: BUILD_TEMPLATE_NAME
                 valueFrom:
                   configMapKeyRef:
                     name: dmn-quarkus-knative-builder-env
-                    key: accessToken
+                    key: build_template
               - name: SERVICE_ACCOUNT_NAME
                 valueFrom:
                   configMapKeyRef:
                     name: dmn-quarkus-knative-builder-env
-                    key: secretToken
+                    key: serviceAccount
               - name: REGISTRY_ACCOUNT
                 valueFrom:
                   configMapKeyRef:
                     name: dmn-quarkus-knative-builder-env
-                    key: accessToken
+                    key: registryAccount

@@ -6,8 +6,8 @@ spec:
   serviceAccountName: build-bot
   source:
     git:
-      revision: https://github.com/xiezhang7/submarine-quarkus-knative-builder
-      url: master
+      revision: master
+      url: https://github.com/xiezhang7/submarine-quarkus-knative-builder
   steps:
     - args:
         - "/usr/local/bin/buildah.sh"
