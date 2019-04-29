@@ -13,39 +13,62 @@ import javax.ws.rs.core.MediaType;
 public class QuarkusKnativeBuilder {
 
     private final static String SERVICE_YAML =
-            "apiVersion: serving.knative.dev/v1alpha1\n" +
-            "kind: Service\n" +
-            "metadata:\n" +
-            "  name: ${service}\n" +
-            "spec:\n" +
-            "  runLatest:\n" +
-            "    configuration:\n" +
-            "      build:\n" +
-            "        apiVersion: build.knative.dev/v1alpha1\n" +
-            "        kind: Build\n" +
-            "        spec:\n" +
-            "          serviceAccountName: ${serviceAccount}\n" +
-            "          source:\n" +
-            "            git:\n" +
-            "              revision: ${branch}\n" +
-            "              url: ${repo}\n" +
-            "          template:\n" +
-            "            arguments:\n" +
-            "              - name: IMAGE\n" +
-            "                value: ${registryAccount}/${service}:${tag}\n" +
-            "              - name: CONTEXT_DIR\n" +
-            "                value: /workspace/${workDir}\n" +
-            "              - name: SUBMARINE_MAVEN_MIRROR\n" +
-            "                value: ${mavenMirror}\n" +
-            "            name: ${buildTemplate}\n" +
-            "          timeout: 20m\n" +
-            "      revisionTemplate:\n" +
-            "        metadata:\n" +
-            "          labels:\n" +
-            "            app: ${service}\n" +
-            "        spec:\n" +
-            "          container:\n" +
-            "            image: ${registryAccount}/${service}:${tag}";
+            "{" +
+            "  \"apiVersion\": \"serving.knative.dev/v1alpha1\"," +
+            "  \"kind\": \"Service\"," +
+            "  \"metadata\": {" +
+            "    \"name\": \"${service}\"" +
+            "  }," +
+            "  \"spec\": {" +
+            "    \"runLatest\": {" +
+            "      \"configuration\": {" +
+            "        \"build\": {" +
+            "          \"apiVersion\": \"build.knative.dev/v1alpha1\"," +
+            "          \"kind\": \"Build\"," +
+            "          \"spec\": {" +
+            "            \"serviceAccountName\": \"${serviceAccount}\"," +
+            "            \"source\": {" +
+            "              \"git\": {" +
+            "                \"revision\": \"${branch}\"," +
+            "                \"url\": \"${repo}\"" +
+            "              }" +
+            "            }," +
+            "            \"template\": {" +
+            "              \"arguments\": [" +
+            "                {" +
+            "                  \"name\": \"IMAGE\"," +
+            "                  \"value\": \"${registryAccount}/${service}:${tag}\"" +
+            "                }," +
+            "                {" +
+            "                  \"name\": \"CONTEXT_DIR\"," +
+            "                  \"value\": \"/workspace/${workDir}\"" +
+            "                }," +
+            "                {" +
+            "                  \"name\": \"SUBMARINE_MAVEN_MIRROR\"," +
+            "                  \"value\": \"${mavenMirror}\"" +
+            "                }" +
+            "              ]," +
+            "              \"name\": \"${buildTemplate}\"" +
+            "            }," +
+            "            \"timeout\": \"20m\"" +
+            "          }" +
+            "        }," +
+            "        \"revisionTemplate\": {" +
+            "          \"metadata\": {" +
+            "            \"labels\": {" +
+            "              \"app\": \"${service}\"" +
+            "            }" +
+            "          }," +
+            "          \"spec\": {" +
+            "            \"container\": {" +
+            "              \"image\": \"${registryAccount}/${service}:${tag}\"" +
+            "            }" +
+            "          }" +
+            "        }" +
+            "      }" +
+            "    }" +
+            "  }" +
+            "}";
 
     private String mavenMirror = System.getenv("MAVEN_MIRROR");
     private String buildTemplate = System.getenv("BUILD_TEMPLATE_NAME");

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: RoleBinding
+metadata:
+  name: deploy-bot-role
+roleRef:
+  apiGroup: v1
+  kind: ClusterRole
+  name: admin
+subjects:
+  - kind: ServiceAccount
+    name: deploy-bot
