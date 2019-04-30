@@ -1,5 +1,10 @@
 package org.submarine.builder;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -86,7 +91,7 @@ public class QuarkusKnativeBuilder {
     @Path("{service}/{tag}")
     public QuarkusKnativeBuildRequest deploy(@PathParam("service") String service,
                                              @PathParam("tag") String tag,
-                                             QuarkusKnativeBuildRequest request) {
+                                             QuarkusKnativeBuildRequest request) throws IOException {
 
         String serviceYaml = SERVICE_YAML
                 .replaceAll("\\$\\{service\\}", service)
@@ -99,6 +104,18 @@ public class QuarkusKnativeBuilder {
                 .replaceAll("\\$\\{serviceAccount\\}", serviceAccount)
                 .replaceAll("\\$\\{registryAccount\\}", registryAccount);
 
-        return new QuarkusKnativeBuildRequest(request.getRepo(), request.getBranch(), serviceYaml);
+        String token = executeCommand(new String[]{"/bin/bash", "-c", "cat /var/run/secrets/kubernetes.io/serviceaccount/token"});
+        String namespace = executeCommand(new String[]{"/bin/bash", "-c", "cat /var/run/secrets/kubernetes.io/serviceaccount/namespace"});
+
+        return new QuarkusKnativeBuildRequest(namespace, token, serviceYaml);
+    }
+
+    private String executeCommand(String[] commands) throws IOException {
+        Process process = Runtime.getRuntime().exec(commands);
+
+        try (InputStream is = process.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            return reader.readLine();
+        }
     }
 }
