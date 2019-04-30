@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: dmn-quarkus-knative-builder-env
 data:
-  maven_mirror: "http://nexus-xz-nexus.app.middleware.ocp.cloud.lab.eng.bos.redhat.com/nexus/content/groups/public/"
+  maven_mirror: $mavenMirror
   build_template: "build-dmn-quarkus"
   serviceAccount: "build-bot"
-  registryAccount: "xiezhang7"
+  registryAccount: $imageRegistry

@@ -87,9 +87,14 @@ public class QuarkusKnativeBuilder {
         registryAccount = registryAccount == null ? "" : registryAccount;
     }
 
+    private final static String SERVICE_CREATE_COMMAND = "curl -k -X POST --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt " +
+            "-H 'Accept: application/json' -H 'Content-Type: application/json' -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" " +
+            "\"https://openshift.default.svc.cluster.local/apis/serving.knative.dev/v1alpha1/namespaces/$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)/services\" " +
+            "-d ";
+
     @POST
     @Path("{service}/{tag}")
-    public QuarkusKnativeBuildRequest deploy(@PathParam("service") String service,
+    public String deploy(@PathParam("service") String service,
                                              @PathParam("tag") String tag,
                                              QuarkusKnativeBuildRequest request) throws IOException {
 
@@ -104,10 +109,16 @@ public class QuarkusKnativeBuilder {
                 .replaceAll("\\$\\{serviceAccount\\}", serviceAccount)
                 .replaceAll("\\$\\{registryAccount\\}", registryAccount);
 
-        String token = executeCommand(new String[]{"/bin/bash", "-c", "cat /var/run/secrets/kubernetes.io/serviceaccount/token"});
-        String namespace = executeCommand(new String[]{"/bin/bash", "-c", "cat /var/run/secrets/kubernetes.io/serviceaccount/namespace"});
+//        String token = executeCommand(new String[]{"/bin/bash", "-c", "cat /var/run/secrets/kubernetes.io/serviceaccount/token"});
+//        String namespace = executeCommand(new String[]{"/bin/bash", "-c", "cat /var/run/secrets/kubernetes.io/serviceaccount/namespace"});
 
-        return new QuarkusKnativeBuildRequest(namespace, token, serviceYaml);
+        String command = SERVICE_CREATE_COMMAND + "'" +serviceYaml + "'";
+        System.out.println(command);
+
+        String result = executeCommand(new String[]{"/bin/bash", "-c", "echo $(" + command + ")"});
+        System.out.println(result);
+
+        return result;
     }
 
     private String executeCommand(String[] commands) throws IOException {
@@ -115,7 +126,15 @@ public class QuarkusKnativeBuilder {
 
         try (InputStream is = process.getInputStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            return reader.readLine();
+
+            StringBuilder sb = new StringBuilder();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append(" ");
+            }
+
+            return sb.toString();
         }
     }
 }
