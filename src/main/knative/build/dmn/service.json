@@ -29,7 +29,7 @@
                   "value": "/workspace/${workDir}"
                 },
                 {
-                  "name": "SUBMARINE_MAVEN_MIRROR",
+                  "name": "KOGITO_MAVEN_MIRROR",
                   "value": "${mavenMirror}"
                 }
               ],

@@ -1,1 +1,1 @@
-# submarine-quarkus-knative-builder
+# kogito-quarkus-knative-builder

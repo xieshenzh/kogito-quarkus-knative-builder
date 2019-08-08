@@ -8,8 +8,8 @@ spec:
       name: IMAGE
     - description: The context directory from where to run the build.
       name: CONTEXT_DIR
-    - description: The url of the mirror with submarine artifacts
-      name: SUBMARINE_MAVEN_MIRROR
+    - description: The url of the mirror with kogito artifacts
+      name: KOGITO_MAVEN_MIRROR
   steps:
     - args:
         - "/usr/local/bin/buildah.sh"
@@ -19,7 +19,7 @@ spec:
         - name: DESTINATION_NAME
           value: ${IMAGE}
         - name: MAVEN_MIRROR_URL
-          value: ${SUBMARINE_MAVEN_MIRROR}
+          value: ${KOGITO_MAVEN_MIRROR}
       image: quay.io/rhdevelopers/quarkus-java-builder
       name: build-and-push
       # needed for buildah builds to be running as containers

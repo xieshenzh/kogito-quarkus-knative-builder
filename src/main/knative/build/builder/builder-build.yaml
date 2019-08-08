@@ -7,7 +7,7 @@ spec:
   source:
     git:
       revision: master
-      url: https://github.com/xiezhang7/submarine-quarkus-knative-builder
+      url: https://github.com/xiezhang7/kogito-quarkus-knative-builder
   steps:
     - args:
         - "/usr/local/bin/buildah.sh"

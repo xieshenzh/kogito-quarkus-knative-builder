@@ -1,4 +1,4 @@
-package org.submarine.builder;
+package org.kie.kogito.builder;
 
 import java.util.Objects;
 

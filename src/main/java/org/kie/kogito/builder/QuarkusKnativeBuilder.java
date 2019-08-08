@@ -1,4 +1,4 @@
-package org.submarine.builder;
+package org.kie.kogito.builder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class QuarkusKnativeBuilder {
             "                  \"value\": \"/workspace/${workDir}\"" +
             "                }," +
             "                {" +
-            "                  \"name\": \"SUBMARINE_MAVEN_MIRROR\"," +
+            "                  \"name\": \"KOGITO_MAVEN_MIRROR\"," +
             "                  \"value\": \"${mavenMirror}\"" +
             "                }" +
             "              ]," +
